@@ -1,0 +1,478 @@
+// Setting Value
+{{ setting_value('streams::field_slug', config_get('streams::distribution.field_slug')) }}
+
+// Content View
+{{ page.content.render | raw}}
+
+// Content Exerpt View
+{{ page.content | striptags | slice(0, 120) }}
+
+// Multiple File View
+{% for each in page.field-slug %}
+  {{ each.url }}
+{% endfor %}
+
+// Current Year
+{{ "now"|date("Y") }}
+
+// Current Date
+{% set today = "now"|date('Y-m-d') %}
+
+// Displaying Block
+{{ blocks('footer')|raw }}
+
+{% for block in blocks('area-slug') %}
+  {{ block.make.content|raw }}
+{% endfor %}
+
+{% for block in blocks('area-slug') %}
+  {% if block.extension.value.slug == 'example_block' %}
+    {{ block.make.content|raw }}
+  {% endif %}
+{% endfor %}
+
+
+// Display Block with a limit of 5
+{% for block in blocks('area-slug') %}
+	{% if loop.index <= '5' %}
+		{{ block.make.content|raw }}
+	{% endif %}
+{% endfor %}
+
+
+// Displaying Block with Limit
+{% set limit = 0 %}
+{% set break = false %}
+{% for block in blocks('gallery-images') if not break %}
+	{{ block.make.content|raw }}
+	{% set limit = limit + 1 %}
+	{% if limit == 6 %}
+		{% set break = true %}
+	{% endif %}
+{% endfor %}
+
+
+// Displaying Block in Page Layout using for Loop
+{% for block in page.block_slug %}
+	{% if block.extension.value.slug == 'example_block' %}
+		//
+	{% endif %}
+{% endfor %}
+
+
+
+// Displaying Blocks using Query
+{% set blocks = query()
+.from('blocks_<BLOCK TYPE SLUG HERE>_blocks')
+.get() %}
+
+{% for block in blocks %}
+	{% set thumbnail = query().from('files_files').where('id', block.<image_field_slug>_id).first() %}
+	<h5>{{ block.title }}</h5>
+{% endfor %}
+
+
+
+
+// Block Type Content Layout
+<img src="files/{{ block.image_field_slug.path }}" alt="">
+<img src="{{ block.image_field_slug.url }}" alt="">
+{{ block.field_slug }}
+
+// Post Loop by Type
+{% for post in entries('posts').type('type_slug').where('enabled', 1).get() %}
+	{{ post.make.content|raw }}
+{% endfor %}
+
+// Post Order by Field
+{% for post in entries('posts').type('type_slug').where('enabled', 1).orderBy('field_slug','asc').get() %}
+	{{ post.make.content|raw }}
+{% endfor %}
+
+
+// Post Loop in Page Layout with Post Single page permalink url
+{% for post in entries('posts').type('type_slug').where('enabled', 1).orderBy('field_slug', 'asc').get() %}
+	<h5>{{ post.title }}</h5>
+	<a href="{{ url_to("/posts/" ~ post.slug) }}">Learn More</a>
+{% endfor %}
+
+
+
+
+
+
+// Get Post Date
+{{ post.field_slug.date|date('d F Y')}}
+
+// Get Post Category
+{{ post.category.name }}
+
+
+
+
+
+
+// Displaying Menu
+{{ structure()
+  .linkAttributesDropdown({'data-toggle': 'dropdown'})
+  .listClass('navbar-nav nav')
+  .itemClass('nav-item')
+  .activeClass('active')
+  .link_class('nav-link')
+  .selected_class('active')
+  .childListClass('dropdown-menu')
+  .render()|raw 
+}}
+
+// MENU ITEM EDIT
+{% set menu =  structure()
+.linkAttributesDropdown({'data-toggle': 'dropdown'})
+.listClass('nav ml-auto')
+.itemClass('nav-item')
+.activeClass('active')
+.link_class('nav-link')
+.selected_class('active')
+.childListClass('dropdown-menu') |split('</li>') %}
+{% set menu_add = '<li class="nav-item"><a class="nav-link" href="">New</a></li>' %}
+{% set i = 0 %}
+{% for menu in  menu %}
+	{% set i = i + 1 %}
+	{% if i == 2 %}
+		{{ menu_add | raw }}
+	{% else %}
+		{{ menu | raw }}
+	{% endif %}
+{% endfor %}
+
+
+
+
+
+
+// Repeater Field Display in Page Layout
+{% for page in page.repeater_field_slug %}
+  <h2>{{ page.title }}</h2>
+  <p>{{ page.description }}</p>
+{% endfor %}
+
+// Forms
+{{ form({'stream': form_slug, 'namespace': form_space}).buttons(['cancel']).redirect('foo/bar').successMessage('Success') }}
+{% set form = form('forms::form_slug')
+    .fields({ 
+        'first_name': {
+            'type': 'anomaly.field_type.text',
+            'class' : 'form-control',
+            'id' : 'fname',
+            'placeholder': 'First Name',
+            'name' : 'fname',
+            'required': true
+        },'last_name': {
+            'type': 'anomaly.field_type.text',
+            'class' : 'form-control',
+            'id' : 'sname',
+            'placeholder': 'Last Name',
+            'name' : 'sname',
+            'required': true
+        },'email': {
+            'type': 'anomaly.field_type.text',
+            'class' : 'form-control',
+            'id' : 'email',
+            'placeholder': 'Email',
+            'name' : 'email',
+            'required': true
+        },'phone': {
+            'placeholder': 'Phone Number',
+            'type': 'anomaly.field_type.text',
+            'class' : 'form-control',
+            'id' : 'phone',
+            'name' : 'phone',
+            'config' : {
+              'max': 14,
+              'mask': '(999) 999-9999'
+            },
+            'required': false
+        },'message': {
+            'placeholder': 'Your Message',
+            'type': 'anomaly.field_type.textarea',
+            'class' : 'form-control message',
+            'rows' : 3,
+            'id' : 'msg',
+            'required' : true
+        }
+     }).get()
+%}
+{{ form.open|raw }}
+  <div class="form_wrap">
+    <div class="col-md-6 col-sm-6 col-xs-6">
+    {{ form.fields.first_name.setAttributes({ 'required' : 'required' }).input|raw }}
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-6">
+     {{ form.fields.last_name.setAttributes({ 'required' : 'required' }).input|raw }}
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-6">
+     {{ form.fields.phone.setAttributes({ 'required' : '' }).input|raw }}
+    </div>
+    <div class="col-md-6 col-sm-6 col-xs-6">
+    {{ form.fields.email.setAttributes({ 'required' : 'required' }).input|raw }}
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+    {{ form.fields.message.setAttributes({ 'required' : 'required' }).input|raw }}
+    </div>
+    <div class="col-md-4 col-sm-4 col-xs-12">
+    <button class="btn btn_submit">Submit</button>
+    </div>
+  </div>
+  <div class="col-md-12 col-sm-12 col-xs-12">
+    {% include "templates::pagetwigs/messages" %}						
+  </div>
+{{ form.close|raw }}
+
+
+
+// FORM RAW DISPLAY
+{% set form = form('forms::your_form_slug').get() %}
+{{ form.open|raw }}
+   {% for field in form.fields %}
+	   <div class="{{ field.input_name }}-wrapper">
+	       {{ field.render()|raw }}
+	   </div>
+   {% endfor %}
+   {{ form.actions|raw }}
+{{ form.close|raw }}
+
+
+
+// Get the form and set it to redirect to our homepage if its successfully submitted.
+{% set form = form('forms::your_form_slug').redirect('/').get() %}
+
+// Catch the errors
+{% if form.hasErrors %}
+	Errors
+	{% for key,errors in form.errors.messages %}
+		{{key}}
+		{% for error in errors %}
+		    {{error}}
+		{% endfor %}
+	{% endfor %}
+{% endif %}
+
+// Our form output, that you will use to style your form your way
+{{ form.open({'class':'contact_form'})|raw }}
+	{{ form.fields.name|raw }}
+	{{ form.fields.email|raw }}
+	{{ form.fields.message|raw }}
+	<button>Send</button>
+{{ form.close|raw }}
+
+
+// AJAX FORM
+{% set form = form('forms::form_slug').ajax(true).get() %}
+{{ form.open({'id':'subscribe-form'})|raw }}
+	{{ form.fields.email.setAttributes({ 'required' : 'required', 'placeholder' : 'Your Email...' }).input|raw }}
+	<input type="submit" value="SUBMIT">
+	<div id="subscribe-msg"></div>
+{{ form.close|raw }}
+
+<script>
+if($('form#subscribe-form').length > 0){
+	$("form#subscribe-form").submit(function(e) {
+		e.preventDefault();
+		var form = $(this);
+		var url = form.attr('action');
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: form.serialize(),
+			success: function (data) {
+				console.log(data);
+				if(data.success == true){
+					form.parent().html('<p class="text-white">Thank You For Subscribing!</p>')
+				}else{
+					var msg = data.errors.email[0];
+					form.find('#subscribe-msg').addClass('error').html(msg)
+				}
+			},
+			error: function (data) {
+				console.log(data);
+			},
+		});
+	});
+}
+</script>
+
+
+
+
+
+
+
+// Form Notification Content Custom field display
+{{ forms_getField(input,'field_name') | raw }}
+
+
+// Displaying Breadcrumbs
+<ol class="breadcrumb">
+    {% for key, url in template.breadcrumbs %}
+
+        {% if loop.last %}
+            <li class="active">{{ trans(key) }}</li>
+        {% else %}
+            <li><a href="{{ url }}">{{ trans(key) }}</a></li>
+        {% endif %}
+
+    {% endfor %}
+</ol>
+
+
+//PRODUCT CATEGORY
+{% for products_cat in entries('products','categories').where('level', 0).get() %}
+	{{ products_cat.name }}
+{% endfor %}
+
+
+
+// CART AREA
+{% set httpcookie = app.request.server.get('HTTP_COOKIE') %}                      
+{% set guestcookie = explode(";", explode("GuestCookie=", httpcookie)[1])[0]  %}
+{% if auth_check() %}                  
+{% set cart = entries('products','cart').where('user_id',auth_user().id).orWhere('ipAddress',guestcookie).orderBy('id','desc').get() %}
+{% set cartCount = entries('products','cart').where('user_id',auth_user().id).orWhere('ipAddress',guestcookie).sum('quantity') %}                              
+{% else %}
+{% set cart = entries('products','cart').where('ipAddress',guestcookie).orderBy('id','desc').get() %}
+{% set cartCount = entries('products','cart').where('ipAddress',guestcookie).sum('quantity') %}   
+{% endif %}
+<a href="#" data-toggle="modal" data-target="#cartModal"><i class="fa fa-shopping-cart" aria-hidden="true"></i> 
+<span class="badge badge-light">{{cartCount}}</span>
+</a>
+
+
+// For Loop Array Merge
+{% set event_array = [] %}
+{% for events in entries('posts').type('events').where('enabled', 1).get() %}
+	{% set name = events.title|e %}
+	{% set date = events.event_date.date|date('M/d/Y') %}
+	{% set time = events.event_date.time %}
+	{% set type = events.event_type|e %}
+	{% set link = request_root() ~ url_to("/posts/" ~ events.slug) %}
+	{% set everyYear = (events.every_year == '1') ? true : false %}
+	{% set event_array = event_array | merge({(loop.index0) : {'name': name, 'date': date, 'from': time, 'type': type, 'link': link, 'everyYear': everyYear } }) %}
+{% endfor %}
+{{ event_array|json_encode() }}
+
+
+// Containment Operator - For Page/Path comparison
+{% if 'scmc' in app.request.pathinfo %}
+	// Header1
+{% else %}
+	// Header2
+{% endif %}
+
+
+
+
+// Events Page
+<div class="container event_sec">
+	<div class="row event_sec_row">
+		{% set today = "now"|date('Y-m-d') %}
+		{% set events_today = entries('posts').type('events').having('category_id', 3).where('enabled', 1).whereDate('event_from', '=' , today).orWhereDate('event_to', '>' , today).orderBy('event_from', 'asc').get() %}
+		<div class="col-md-12 event_sec_today event_sec_row_col">
+			<h3>Today's Event</h3>
+			{% for post in events_today %}
+				{% set thumbnail = (post.featured_image.path !='') ? request_root() ~ '/files/' ~ post.featured_image.path : request_root() ~ '/files/images/default-thumb.jpg' %}
+				<div class="event_box event_today">
+					<a href="{{ url_to("/posts/" ~ post.slug) }}"><div class="event_box_image" style="background-image:url({{ thumbnail }})"></div></a>
+					<div class="event_box_content">
+						<a href="{{ url_to("/posts/" ~ post.slug) }}">
+							<h5 class="m-0">{{ post.title }}</h5>
+							<small><i class="fa fa-calendar" aria-hidden="true"></i> {{ "now"|date('M d, Y') }}</small>
+							<p>{{ post.summary }}</p>
+						</a>
+						<a href="{{ url_to("/posts/" ~ post.slug) }}">Learn More</a>
+					</div>
+				</div>
+			{% else %}
+				<p>Sorry, No events for today.</p>
+			{% endfor %}
+		</div>
+		<div class="col-md-12 event_sec_row_col">
+			{% set upcoming_events = entries('posts').type('events').having('category_id', 3).where('enabled', 1).whereDate('event_from', '>' , today).orWhereDate('event_to', '>' , today).orderBy('event_to', 'asc').get() %}
+			<h3>Upcoming Events</h3>
+			{% for post in upcoming_events %}
+				{% set thumbnail = (post.featured_image.path !='') ? request_root() ~ '/files/' ~ post.featured_image.path : request_root() ~ '/files/images/default-thumb.jpg' %}
+				{% set tomorrow = "now"|date_modify("+1 day")|date('M d, Y') %}
+				{% set event_date = post.event_from.date|date('M d, Y') %}
+				{% set event_date_to = post.event_to.date|date('M d, Y') %}
+				<div class="event_box event_today">
+					<a href="{{ url_to("/posts/" ~ post.slug) }}"><div class="event_box_image" style="background-image:url({{ thumbnail }})"></div></a>
+					<div class="event_box_content">
+						<a href="{{ url_to("/posts/" ~ post.slug) }}">
+							<h5 class="m-0">{{ post.title }}</h5>
+							<small><i class="fa fa-calendar" aria-hidden="true"></i>{% if event_date == tomorrow %}{{ event_date }}{% else %}{{ tomorrow }}{% endif %}  {% if event_date_to !='' and event_date_to != tomorrow %} -  <i class="fa fa-calendar" aria-hidden="true"></i> {{ event_date_to }}{% endif %}</small>
+							<p>{{ post.summary }}</p>
+						</a>
+						<a href="{{ url_to("/posts/" ~ post.slug) }}">Learn More</a>
+					</div>
+				</div>
+			{% else %}
+				<p>Sorry, No Upcoming events.</p>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+// Events Page 2
+<div class="container event_sec">
+	<div class="row event_sec_row">
+		{% set today = "now"|date('Y-m-d') %}
+		{% set events_today = entries('posts').type('events').where('enabled', 1).orderBy('event_date_from', 'asc').get() %}
+		<div class="col-md-12 event_sec_today event_sec_row_col">
+			<h3>Today's Event</h3>
+			{% set evdatef = 0 %}
+			{% for post in events_today %}
+				{% set evdatefrom = post.event_date_from.date|date('Y-m-d') %}
+				{% set evdateto = post.event_date_to.date|date('Y-m-d') %}
+				{% if evdatefrom == today  or evdatefrom < today and evdateto > today %}
+					{% set thumbnail = (post.event_image.path !='') ? request_root() ~ '/files/' ~ post.event_image.path : request_root() ~ '/files/images/default-thumb.jpg' %}
+					<div class="event_box event_date_today">
+						<a href="{{ url_to("/posts/" ~ post.slug) }}"><div class="event_box_image" style="background-image:url({{ thumbnail }})"></div></a>
+						<div class="event_box_content">
+							<a href="{{ url_to("/posts/" ~ post.slug) }}">
+								<h5 class="m-0">{{ post.title }}</h5>
+								<small><i class="fa fa-calendar" aria-hidden="true"></i> {{ "now"|date('M d, Y') }} {{ post.event_date_from.time|date('G:i A') }}</small>
+								<p>{{ post.summary }}</p>
+							</a>
+							<a href="{{ url_to("/posts/" ~ post.slug) }}">Learn More</a>
+						</div>
+					</div>
+					{% set evdatef = evdatef + 1 %}
+				{% endif %}
+			{% endfor %}
+			{% if evdatef == 0 %}
+				<p>Sorry, No events for today.</p>
+			{% endif %}
+		</div>
+		<div class="col-md-12 event_sec_row_col">
+			{% set upcoming_events = entries('posts').type('events').where('enabled', 1).whereDate('event_date_from', '>' , today).orWhereDate('event_date_to', '>' , today).orderBy('event_date_to', 'asc').get() %}
+			<h3>Upcoming Events</h3>
+			{% for post in upcoming_events %}
+				{% set thumbnail = (post.event_image.path !='') ? request_root() ~ '/files/' ~ post.event_image.path : request_root() ~ '/files/images/default-thumb.jpg' %}
+				{% set tomorrow = "now"|date_modify("+1 day")|date('M d, Y') %}
+				{% set event_date = post.event_date_from.date|date('M d, Y') %}
+				{% set event_date_to = post.event_date_to.date|date('M d, Y') %}
+				<div class="event_box event_date_today">
+					<a href="{{ url_to("/posts/" ~ post.slug) }}"><div class="event_box_image" style="background-image:url({{ thumbnail }})"></div></a>
+					<div class="event_box_content">
+						<a href="{{ url_to("/posts/" ~ post.slug) }}">
+							<h5 class="m-0">{{ post.title }}</h5>
+							<small><i class="fa fa-calendar" aria-hidden="true"></i>{% if event_date == tomorrow %}{{ event_date }} {{ post.event_date_from.time|date('G:i A') }}{% else %}{{ tomorrow }} {{ post.event_date_from.time|date('G:i A') }}{% endif %}  {% if event_date_to !='' and event_date_to != tomorrow %} -  <i class="fa fa-calendar" aria-hidden="true"></i> {{ event_date_to }} {{ post.event_date_to.time|date('G:i A') }}{% endif %}</small>
+							<p>{{ post.summary }}</p>
+						</a>
+						<a href="{{ url_to("/posts/" ~ post.slug) }}">Learn More</a>
+					</div>
+				</div>
+			{% else %}
+				<p>Sorry, No Upcoming events.</p>
+			{% endfor %}
+		</div>
+	</div>
+</div>
