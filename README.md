@@ -1,6 +1,6 @@
 # 👋 Hello, I'm Devaraj PD!
 
-💻 Full Stack Developer | 🚀 Passionate about Building Scalable Web Applications
+💻 Full PHP Stack Developer | 🚀 Passionate about Building Scalable Web Applications
 
 ---
 
@@ -18,10 +18,13 @@
 ![NodeJS](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![ExpressJS](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
 ![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
-![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
 
 ### Database
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white)
+
+## 📊 GitHub Stats
+![Devaraj's GitHub stats](https://github-readme-stats.vercel.app/api?username=devarajpd&show_icons=true&theme=tokyonight)
+
+## 🧩 Top Languages
+![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=devarajpd&layout=compact&theme=tokyonight)
+
