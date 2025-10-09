@@ -1,6 +1,6 @@
 # 👋 Hello, I'm Devaraj PD!
 
-💻 Full PHP Stack Developer | 🚀 Passionate about Building Scalable Web Applications
+💻 PHP Full Stack Developer | 🚀 Passionate about Building Scalable Web Applications
 
 ---
 
